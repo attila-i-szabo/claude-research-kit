@@ -37,7 +37,16 @@ It prints `FILE:LINE: [Rn] message` for each violation and exits 1 if there are 
 8. **Nested Markdown lists are indented by 4 spaces per level**, and a blank line precedes every top-level list (otherwise the renderer may not recognise the list).
 9. **List items that contain empty line(s)** (e.g. to separate a sublist from the bulk text) **must be delimited by a newline** on either side.
 
-These rules apply to every Markdown file of an opted-in project, code READMEs included. Formulas there are LaTeX too, never ASCII math like `L^2` or `|Phi|^(2K)`.
+These rules apply to every Markdown file of an opted-in project, code READMEs included.
+
+## Math in code READMEs
+
+Formulas in code READMEs are LaTeX too, never ASCII math like `L^2`, `sqrt(3)` or `|Phi|^(2K)`. Two exceptions keep the source readable where math is sparse:
+
+- **Single Greek letters** may be plain Unicode: Γ for the centre of the Brillouin zone, φ for an angle, χ for a susceptibility.
+- **Formulas that read unambiguously without rendering** may be plain text: function notation such as V(k) or D(k), path labels such as Γ-K-M-Γ, a product or ratio of two symbols. Anything with exponents, subscripts, fractions, roots, sums or vectors is LaTeX: $L^2$, $\sqrt3 \times \sqrt3$, $1/r^3$, $e^{i\phi}$, $H = \frac12 \sum_{ij} S_i \cdot J_{ij} \cdot S_j$.
+
+**Code identifiers are always in backticks, never in math** (rule 7). Whether a symbol is a code name or a quantity decides its markup: "`L` must be divisible by 6", but "an $L \times L$ torus". Where a symbol is both, give the code name once together with its mathematical meaning.
 
 ## What the checker covers
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Install the research kit: symlink skills and agents into ~/.claude, register the hook.
+# Install the research kit: symlink skills, agents and the user profile into ~/.claude,
+# register the hook.
 # Idempotent; refuses to overwrite anything that is not already a symlink into the kit.
 set -euo pipefail
 
@@ -27,6 +28,8 @@ done
 for f in "$KIT"/agents/*.md; do
     link "$f" "$CLAUDE/agents/$(basename "$f")"
 done
+# the user's profile, read in every session (skipped if a regular file exists there)
+link "$KIT/user/CLAUDE.md" "$CLAUDE/CLAUDE.md"
 
 # register the PostToolUse hook in ~/.claude/settings.json, keeping all other keys
 python3 - "$CLAUDE/settings.json" "$KIT/hooks/post_edit.py" <<'EOF'

@@ -13,7 +13,8 @@ Code READMEs follow skill `project-layout`. Cross-references from code to notes 
 
 - Each function has a **single-line docstring**.
 - One script per figure or check, named after what it produces; it says in its module docstring which notes file it serves.
-- Scripts are runnable from the root (`python code/script.py`) and write outputs to the paths given in the notes and the code README.
+- Scripts are runnable from the root (`python code/script.py`) and write outputs to the paths given in the notes and the code README. A project's `CLAUDE.md` may name another working directory.
+- A change to a script's command line, config schema or outputs updates the code README in the same pass (skill `project-layout`), with the calling sequence checked against the argument parser.
 
 ## When to use production style
 
@@ -79,7 +80,8 @@ A function body longer than a few lines must not be an undivided pile of instruc
 - Run **`black`** (default settings) on every `.py` file you touch in `code/`, in both tiers. In projects that opt in (their `CLAUDE.md` names `python-style`), a hook runs black after every edit of a `.py` file.
 - Keep lines in production code, docstrings included, within **88 columns**. Black does not wrap docstrings or comments, so rewrap them by hand.
 - **Verify each change by running it** with a test script in the scratchpad, not in `code/` unless the user asks. Where an earlier implementation exists, check the new code against it. Report what was checked.
-- Mention new production modules in the relevant numbered notes file and in the code README.
+- Mention new production modules in the relevant numbered notes file and in the code README. A change to a module's interface, a script's command line or a config schema updates the code README in the same pass (skill `project-layout`), with the calling sequence checked against the argument parser.
+- Scripts take their arguments through `argparse` (so `--help` works) and keep their work in a `main()` behind `if __name__ == "__main__":`, split into functions with one job each.
 
 ## Packaging and maintainability
 

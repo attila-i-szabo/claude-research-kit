@@ -17,6 +17,7 @@ Skills, agents and hooks for writing physics literature reviews, research notes 
 | `agents/code-simplifier` | agent (Sonnet) | Behaviour-preserving tidy-up and packaging of Python code |
 | `hooks/post_edit.py` | hook | After each Edit/Write: markdown check on `.md`, black on `.py`, only where opted in |
 | `templates/CLAUDE.md` | template | Starting point for a new project's `CLAUDE.md` |
+| `user/CLAUDE.md` | profile | The user's "About me" profile, linked to `~/.claude/CLAUDE.md`; skill `research-writing` takes the audience from it |
 
 Skills are loaded on demand: only their one-line descriptions are always in context. Agents run in their own context with their own model. The hook is the only piece that is enforced mechanically.
 
@@ -26,7 +27,7 @@ Skills are loaded on demand: only their one-line descriptions are always in cont
 ~/Science/claude-research-kit/install.sh
 ```
 
-It links `~/.claude/skills/<name>` and `~/.claude/agents/<name>.md` to this repository and registers the hook in `~/.claude/settings.json` (other settings are kept). Rerunning it is harmless; run it again after adding a skill or agent.
+It links `~/.claude/skills/<name>`, `~/.claude/agents/<name>.md` and `~/.claude/CLAUDE.md` (the profile, skipped if a regular file is already there) to this repository and registers the hook in `~/.claude/settings.json` (other settings are kept). Rerunning it is harmless; run it again after adding a skill or agent.
 
 ## Using it in a project
 
@@ -36,6 +37,18 @@ Copy `templates/CLAUDE.md` into the project root and edit it. The essential line
 - `.py` files are formatted with black if it mentions `python-style`.
 
 A directory with its own `CLAUDE.md` is a project root (skill `project-layout`): Claude may work anywhere below it, never above.
+
+## Porting an existing project
+
+For a project that predates the kit:
+
+1. **One `CLAUDE.md` at the root.** Merge every nested `CLAUDE.md` (e.g. `notes/CLAUDE.md`) into the root one, keeping only true project overrides. A nested one makes its directory a separate root, which breaks cross-references and the hook's opt-in. Drop rules the skills already state.
+2. **Rewrite the root `CLAUDE.md` from the template**: name the skills, declare the Python tier, and state any non-default working directory or figure location.
+3. **Papers into the library.** Move each paper to `~/Science/papers/LABEL/LABEL.pdf`, extract any source tarballs there (extract only), append a line to `INDEX.tsv`, and replace the project copy with a symlink (`ln -s ~/Science/papers/LABEL notes/papers/LABEL`). Check for label collisions first.
+4. **Labels and cross-references.** Give each notes file the H1 `# LABEL — Title` and rewrite references to other files as File `NN`, §x.y (skill `project-layout`). Replace citations of code by line number with the names of functions or arrays.
+5. **Code.** Before refactoring, record the outputs of every script on small inputs; afterwards, compare them exactly. Run black once over the whole code directory, so that the hook does not reformat files piecemeal later.
+6. **Code README** to the structure of `project-layout`, with calling sequences checked against the scripts.
+7. **Check:** run `check_markdown.py` on every Markdown file and resolve every cross-reference.
 
 ## Paper library
 

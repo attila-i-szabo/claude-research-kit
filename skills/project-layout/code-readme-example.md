@@ -47,3 +47,73 @@ python code/plot_theta_scan.py [--partial] [scan_directory ...]
 
 - `scan_directory ...`: directories with the point files of one model; default: all `code/data/theta_scan_L*_K*`. The figure is saved as `code/data/theta_scan_K{K}_summary.png`.
 - `--partial`: also read the unfinished point files `.npz.partial`; a partial file is ignored if the completed `.npz` of the same point exists. Default: completed files only.
+
+---
+
+# Second example: grouped README with a shared config schema
+
+The example above is a flat `## Modules` README. The excerpt below is from a directory where families of analogous scripts share a method, so the shared parts are stated once per group and analogous scripts list only their differences. Sections elided here are marked "…".
+
+# Analysis and Monte Carlo code (`code/`)
+
+The code computes dipolar couplings on the triangular and honeycomb lattices by Ewald summation, analyses their zero-temperature physics and runs finite-temperature parallel-tempering Monte Carlo.
+
+- **Pipeline.** `dipolar_xy.ewald` produces the triangular-lattice couplings, cached in `data/`. The analysis scripts and the Monte Carlo (MC) drivers project them onto their lattice and analyse or simulate.
+- **Running.** Run every script from `code/`. Outputs go to `data/` (gitignored).
+- **Package.** The shared modules form the package `dipolar_xy` (numpy, scipy and matplotlib only); `pip install -e code` makes it importable elsewhere.
+
+## Conventions
+
+- **Hamiltonian.** $H = \frac12 \sum_{ij} S_i \cdot J_{ij} \cdot S_j$ with a plus sign (File `../notes/02`, §1). The self-energy $J_{ii}$ is set to zero.
+- …
+
+## Parallel-tempering Monte Carlo
+
+Classical MC with heat-bath sweeps and replica exchange along a temperature ladder.
+
+**Round structure.** Each of the `n_rounds` recorded rounds runs `PT_per_round` rounds of replica swaps, each preceded by `sweeps_per_PT` sweeps. Only the state at the end of each round is recorded.
+
+**Config file.** The drivers take one JSON config file (example: `honey_MC_example.json`).
+
+- `L` (required): linear size in unit cells.
+- `n_rounds` (required): number of recorded rounds.
+- `sweeps_per_PT` (default 1), `PT_per_round` (default 2): the round structure above.
+- `temperatures` (list) or `temperature_geom` (`{"min", "max", "steps"}`, passed to `np.geomspace`): the temperature ladder. If both are given, `temperatures` wins and a `UserWarning` is raised. The ladder is sorted ascending.
+- `seed` (default: fresh entropy).
+
+**Outputs**, under a root `data/{model}_MC_{N}..._{seed}` built from the resolved parameters:
+
+- `{root}_resolved.json`: the config with every default filled in; passing it back reproduces the run exactly.
+- `{root}_S.npy`: configurations at the end of every round, shape `(n_rounds, R, N, 2)`, memory-mapped.
+- `{root}.npz`: energy, magnetization and order parameter per round and replica, the ladder and the run parameters.
+
+### `dipolar_xy/mc.py`
+
+MC for a generic 2D XY model with a dense coupling tensor of shape `(N, N, 2, 2)`. Used by `dipolar_xy/mc_driver.py`.
+
+- `sweep(J, S, T, rng)` visits all sites in random order and draws each spin from its exact heat-bath distribution, for all `R` replicas at once.
+- …
+
+- **Design notes.** Because of the plus sign of $H$, a spin anti-aligns with its local field, so the von Mises location is the field angle plus π. Getting this backwards does not crash but samples the least likely states; `check_mc.py` catches it.
+
+### `honey_MC.py`
+
+MC of the honeycomb model in the six-site cell of `dipolar_xy.honeycomb`.
+
+Calling sequence:
+
+```
+python honey_MC.py config.json
+```
+
+- **Config:** additionally `J1x` (default 1), the nearest-neighbour boost.
+- **Outputs:** root `data/honey_MC_{6 L^2}_J1x{J1x}_T{Tmin}-{Tmax}x{R}_{seed}`. The npz also stores `J1x`.
+- `order_parameter(S)` projects a configuration onto the ground-state family; it equals $e^{i\phi}$ for a perfect state at angle φ.
+
+### `triangle_MC.py`
+
+As `honey_MC.py`, except:
+
+- one site per cell, so the triangular couplings are used without sublattice projection;
+- no `J1x`; output root `data/triangle_MC_{L^2}_T{Tmin}-{Tmax}x{R}_{seed}`;
+- `order_parameter(S)` is the complex magnetization.

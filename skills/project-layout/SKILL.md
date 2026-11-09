@@ -49,10 +49,11 @@ Several files may be cited together as "Files `03`–`05`" or "Files `03` and `0
     - one-sentence summary;
     - summary of main learning outcomes, not broken down by file, **bullet points of at most 50 words**;
     - most important outstanding problems, as above.
-- Next, an **H2 heading for each code directory**, each containing:
+- Next, an **H2 heading for each code directory inside this notes directory** (its own `code/`, see above), each containing:
     - heading: name of the directory plus "(code)";
     - a list of the **most important code files**, each with the filename and a **description of at most 50 words.**
         - Ignore helper scripts and other stuff that is unlikely to be used further away from this folder.
+    - Code elsewhere in the root (e.g. a project-level `code/` beside `notes/`) gets no H2 here: it is documented by its own README only.
 - **At the end of each pass, check that the descriptions of every file you changed match what the file now contains. If the pass fundamentally changes the contribution of this directory, propagate it into the description of the directory in its parent, recursively if needed.**
 
 ## Detailed files: focus, splitting and merging
@@ -65,15 +66,35 @@ Several files may be cited together as "Files `03`–`05`" or "Files `03` and `0
 - **Directories.** When a notes directory accumulates several groups of files that each work towards a separate goal, propose to the user moving a group into a nested notes directory (within the allowed depth). Ask before creating a new directory when its topic overlaps strongly with an existing one; recommend adding to the existing one.
 - **Renumbering and moving.** When you rearrange, renumber or move files, update every citation (grep the root for the old label and for relative paths that resolved to it) and **do not leave pointers behind** to the old location.
 
-## code/README.md
+## README.md of a code directory
 
-Every `code/` directory with more than one script has a `README.md`, updated in the same pass as any change to a module's interface or a script's command line. It describes the current behaviour only. Data-format compatibility (e.g. "ZQ14 if the key is absent, as in older files") is stated as a fact about the files, not as history. A worked example is in `code-readme-example.md` in this skill's directory; read it the first time you write a code README in a session.
+Every `code/` directory with more than one script has a `README.md`. A worked example is in `code-readme-example.md` in this skill's directory; read it the first time you write a code README in a session.
 
-- **H1** `# <Role> code (`code/`)`, followed by pointers to the READMEs of subdirectories (e.g. auxiliary scripts in `aux/README.md`).
-- `## Modules`, then one `### `file.py`` section per module or script, ordered from library modules to the scripts and plotting scripts that use them.
-- Each section **opens with a paragraph**:
+### Division of labour with the notes
+
+- The **notes** say *what* is computed and *why*: the physics, the formulas, the derivations.
+- The **README** says *how* the code computes it: data layout, index orderings and sign conventions the code relies on, array shapes, file formats, numerical and performance design, pitfalls.
+- A formula appears in the README only to fix a convention the code depends on (e.g. the sign of the Hamiltonian). Anything that needs a derivation goes into the notes and is cited by cross-reference (File `../notes/04`, §3).
+- Do not describe the code in a separate notes directory: numbered notes files carry literature checks, references and open problems that do not fit a code description, and a description away from the code drifts.
+
+### Structure
+
+1. **H1** `# <Role> code (`code/`)`, then an **overview** of at most about 200 words:
+    - what the directory computes, and the pipeline (which modules feed which);
+    - **how to run the scripts**, said once: working directory and where outputs go (e.g. "run from `code/`; outputs go to `data/`, which is gitignored");
+    - the dependencies and the installable package, if any;
+    - pointers to the READMEs of subdirectories (e.g. `aux/README.md`).
+2. Optional `## Conventions`, only for conventions shared by two or more files: lattice embeddings and geometry, index orderings, units, sign conventions, file formats.
+3. **One H2 per group of files that share a method** (e.g. "Luttinger-Tisza and order by disorder", "Parallel-tempering Monte Carlo"), ordered from library modules to the scripts that use them. If the files have no natural grouping, use a single `## Modules`. A group opens with an **approach** paragraph or a short numbered pipeline, at most about 300 words, citing the notes for derivations. It also holds what the members share: a common calling-sequence block, a config schema, an output-naming rule.
+4. **One H3 per file**, its heading the filename in backticks, ordered within the group from library modules to scripts.
+
+**Say everything once, at the highest level it applies to.** A file section contains only what is specific to that file. For a script analogous to another, say so explicitly and list only the differences: "As `honey_MC.py`, except: …". Each file section is at most about 250 words, code blocks excluded; longer explanations are derivations and belong in the notes.
+
+### Content of a file section
+
+- It **opens with a paragraph**:
     - purpose;
-    - which notes it implements, by cross-reference (File `../09`, §2);
+    - which notes it implements, by cross-reference (File `../notes/09`, §2);
     - heavy dependencies and import side effects (e.g. "requires JAX, enables 64-bit precision on import"; "numpy only, so it runs without JAX");
     - which other modules use it.
 - **Library modules.**
@@ -81,7 +102,22 @@ Every `code/` directory with more than one script has a `README.md`, updated in 
     - Then `Usage:` and a code block of representative calls, with short trailing comments.
     - Then one bullet per constructor or configuration parameter, as `` `name` (default x): meaning ``.
 - **Scripts.**
-    - `Calling sequence:` and a code block (`python code/script.py [--opt] [arg ...]`).
+    - `Calling sequence:` and a code block (`python script.py [--opt] [arg ...]`, from the working directory given in the overview).
     - Then one bullet per argument or option, with its default and effect.
-    - Say where outputs are written, as paths with placeholders like `{L}`.
-- **Formulas use LaTeX**, as in all other Markdown, and follow skill `markdown-style` (e.g. $\chi_F = X_F/L^2$, $\vert\Phi\vert^{2K}$). Never ASCII math like `L^2` or `|Phi|^(2K)`.
+    - **Config file** (for scripts that take a JSON, YAML or TOML file as an argument):
+        - a pointer to the checked-in example config;
+        - one bullet per field, as `` `name` (required) `` or `` `name` (default x) ``, then its meaning, units and allowed values;
+        - alternative or conflicting fields and which one wins, with any warning raised;
+        - fields only some scripts accept ("`honey_MC.py` only");
+        - any resolved config the script writes back, and how output names are derived.
+
+        When several scripts share a schema, it is given once in the group section, and each file section lists only its deviations.
+    - **Outputs:** files written, as paths with placeholders like `{L}`, then the printed diagnostics, one bullet each.
+- Optional **Design notes:** invariants and pitfalls that someone editing the file must know (e.g. "a spin anti-aligns with its local field, so the von Mises location is the field angle plus π; getting this backwards does not crash but samples the wrong states").
+
+### Maintenance
+
+- Update the README **in the same pass** as any change to a module's interface or a script's command line or config schema.
+- **Check every calling sequence against the script's argument handling** (run `--help`, or read the argument parser) whenever you touch the script or its section.
+- Describe the current behaviour only. Data-format compatibility (e.g. "ZQ14 if the key is absent, as in older files") is stated as a fact about the files, not as history; phrases like "as before" or "verified during development" are history.
+- **Formulas use LaTeX**, following skill `markdown-style`, including its exceptions for code READMEs (plain Unicode for single Greek letters, plain text for formulas such as V(k) that read unambiguously without rendering). Code identifiers are in backticks, never in math.

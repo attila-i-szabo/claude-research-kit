@@ -11,7 +11,7 @@ A project's `CLAUDE.md` may override any default here (audience, library path, b
 
 ## Audience
 
-Default audience: a condensed-matter/quantum-many-body theorist familiar with quantum spin liquids, topological order, variational Monte Carlo and neural quantum states. Do not assume fluency in neighbouring fields (e.g. field theory, especially 3D CFTs, or fractional-quantum-Hall lore); introduce their concepts when you need them.
+The audience is the user, as described in the "About me" profile of `~/.claude/CLAUDE.md` (kit file `user/CLAUDE.md`). A project's `CLAUDE.md` may narrow it. Write for that reader: do not explain what the profile says they know, and introduce concepts from the neighbouring fields it lists when you need them.
 
 ## Rigour and clarity
 

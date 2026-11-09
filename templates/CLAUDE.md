@@ -6,6 +6,8 @@
 - Paper library: `~/Science/papers` (default).
 - Use skills: `research-notes`, `research-review`, `research-writing`, `project-layout`, `markdown-style`, `python-style`.
 - Code in `code/` is production style (skill `python-style`); scripts in `notes/*/code/` are light style.
+- Scripts run from `code/` and write to `code/data/` (gitignored); notes link figures as `../code/data/fig.png`. (Example override of the default working directory and figure location.)
+- No other `CLAUDE.md` below this one: a nested `CLAUDE.md` makes its directory a separate root (skill `project-layout`).
 
 ## Project specifics
 
