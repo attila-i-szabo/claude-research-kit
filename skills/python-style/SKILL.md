@@ -76,7 +76,7 @@ A function body longer than a few lines must not be an undivided pile of instruc
 
 ### Formatting and checks
 
-- Run **`black`** (default settings) on every production file you touch. In projects that opt in (their `CLAUDE.md` names `python-style`), a hook runs black after every edit of a `.py` file.
+- Run **`black`** (default settings) on every `.py` file you touch in `code/`, in both tiers. In projects that opt in (their `CLAUDE.md` names `python-style`), a hook runs black after every edit of a `.py` file.
 - Keep lines in production code, docstrings included, within **88 columns**. Black does not wrap docstrings or comments, so rewrap them by hand.
 - **Verify each change by running it** with a test script in the scratchpad, not in `code/` unless the user asks. Where an earlier implementation exists, check the new code against it. Report what was checked.
 - Mention new production modules in the relevant numbered notes file and in the code README.
