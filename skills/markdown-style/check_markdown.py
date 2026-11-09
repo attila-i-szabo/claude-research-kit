@@ -10,7 +10,7 @@ ROW_OPTION = re.compile(r"\\\\\s*\[[^\]]*\]")
 LIST_ITEM = re.compile(r"^( *)(?:[-*+]|\d+[.)])\s")
 FENCE = re.compile(r"^\s*(```|~~~)")
 DIFF_BEFORE = re.compile(
-    r"(?<![A-Za-z\\])[dD](?:\s*\\[A-Za-z]+|\s*[A-Za-z0-9]|\s*[\^_]\{[^{}]*\}"
+    r"(?<![A-Za-z\\])[dD](?:\s*\\[A-Za-z]+|\s*[A-Za-z0-9']|\s*[\^_]\{[^{}]*\}"
     r"|\s*[\^_]\S)+\s*$|\\mathrm\{d\}\s*\\?[A-Za-z]+\s*$"
 )
 DIFF_AFTER = re.compile(r"^\s*(?:[dD](?:\\?[A-Za-z]|\s*\\[A-Za-z])|\\mathrm\{d\})")
@@ -153,7 +153,9 @@ def check_lists(lines, skip, report):
             # walk back over the paragraph; fine if it is already part of a list
             j = k - 1
             while j >= 1 and lines[j - 1].strip():
-                if j not in skip and LIST_ITEM.match(lines[j - 1]):
+                # a list item or an indented continuation paragraph of one
+                prev = lines[j - 1]
+                if j not in skip and (LIST_ITEM.match(prev) or prev.startswith("  ")):
                     break
                 j -= 1
             if j < 1 or not lines[j - 1].strip():
