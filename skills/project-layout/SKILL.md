@@ -39,13 +39,21 @@ Several files may be cited together as "Files `03`–`05`" or "Files `03` and `0
 
 - It starts with an **overview of the topic**, explaining what the directory is for and how the files compose into the whole.
 - Next, an **H2 heading for each file**, each containing:
-    - number (two digits) and title;
+    - heading: number (two digits) and title;
     - name of the detailed file;
     - one-sentence summary;
     - high-level table of contents, each item with a statement of progress of **at most about 50 words**;
     - any outstanding problems, **especially ones that require the user's attention** before work can proceed. Distinguish clearly between "needs a future Claude session to grind through a derivation/literature search" and "needs the user's physics judgment or a decision only they can make."
-- It lists nested notes directories and `code/` with one sentence each.
-- **At the end of each pass, check that the descriptions of every file you changed match what the file now contains.**
+- Next an **H2 heading for each nested notes directory**, each containing:
+    - heading: name of the directory;
+    - one-sentence summary;
+    - summary of main learning outcomes, not broken down by file, **bullet points of at most 50 words**;
+    - most important outstanding problems, as above.
+- Next, an **H2 heading for each code directory**, each containing:
+    - heading: name of the directory plus "(code)";
+    - a list of the **most important code files**, each with the filename and a **description of at most 50 words.**
+        - Ignore helper scripts and other stuff that is unlikely to be used further away from this folder.
+- **At the end of each pass, check that the descriptions of every file you changed match what the file now contains. If the pass fundamentally changes the contribution of this directory, propagate it into the description of the directory in its parent, recursively if needed.**
 
 ## Detailed files: focus, splitting and merging
 
