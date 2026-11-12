@@ -9,11 +9,13 @@ Skills, agents and hooks for writing physics literature reviews, research notes 
 | `skills/research-writing` | skill | Shared standards: audience, rigour, citations, references, state not history, budgets, agent hygiene, reading rules, paper library |
 | `skills/research-review` | skill | Literature-review pipeline: triage → extraction → writing; evidence ledgers |
 | `skills/research-notes` | skill | Notes with new results: required literature checks, derivations, notes about code and runs |
-| `skills/project-layout` | skill | Project root, numbered notes files, nested notes directories, READMEs (notes and code), cross-references, splitting and merging |
+| `skills/project-layout` | skill | Project root, numbered notes files, nested notes directories, READMEs (notes and code), cross-references, splitting and merging, museum of dead ends |
+| `skills/notes-refactor` | skill + scripts | Plan-mode procedure for reorganising a notes collection (inventory, classification, mapping table, moves, checks); `first-port.md` for legacy notes; `inventory.py`, `xref_check.py`, `content_loss.py`, `refcheck.py` |
 | `skills/markdown-style` | skill + script | Markdown/LaTeX house style and `check_markdown.py` |
 | `skills/python-style` | skill | Light and production Python style, packaging and maintainability |
 | `agents/lit-searcher` | agent (Sonnet) | Literature search: shortlist for a review, or prior-work check for notes |
 | `agents/paper-extractor` | agent (Sonnet) | Download 3–5 papers into the library and append targeted notes |
+| `agents/notes-rewriter` | agent (Opus) | Write or rewrite one notes file of a refactor from a brief (sources in a snapshot, mapping-table excerpt) |
 | `agents/code-simplifier` | agent (Sonnet) | Behaviour-preserving tidy-up and packaging of Python code |
 | `hooks/post_edit.py` | hook | After each Edit/Write: markdown check on `.md`, black on `.py`, only where opted in |
 | `templates/CLAUDE.md` | template | Starting point for a new project's `CLAUDE.md` |
@@ -40,7 +42,7 @@ A directory with its own `CLAUDE.md` is a project root (skill `project-layout`):
 
 ## Porting an existing project
 
-For a project that predates the kit:
+For a project that predates the kit (for the notes themselves, follow skill `notes-refactor` with its `first-port.md`, which plans these steps together):
 
 1. **One `CLAUDE.md` at the root.** Merge every nested `CLAUDE.md` (e.g. `notes/CLAUDE.md`) into the root one, keeping only true project overrides. A nested one makes its directory a separate root, which breaks cross-references and the hook's opt-in. Drop rules the skills already state.
 2. **Rewrite the root `CLAUDE.md` from the template**: name the skills, declare the Python tier, and state any non-default working directory or figure location.
@@ -48,7 +50,8 @@ For a project that predates the kit:
 4. **Labels and cross-references.** Give each notes file the H1 `# LABEL — Title` and rewrite references to other files as File `NN`, §x.y (skill `project-layout`). Replace citations of code by line number with the names of functions or arrays.
 5. **Code.** Before refactoring, record the outputs of every script on small inputs; afterwards, compare them exactly. Run black once over the whole code directory, so that the hook does not reformat files piecemeal later.
 6. **Code README** to the structure of `project-layout`, with calling sequences checked against the scripts.
-7. **Check:** run `check_markdown.py` on every Markdown file and resolve every cross-reference.
+7. **Museum.** Create `notes/museum/` for failed or abandoned approaches (skill `project-layout`) and name it in `CLAUDE.md`.
+8. **Check:** run `check_markdown.py` on every Markdown file and `xref_check.py` (skill `notes-refactor`) for the cross-references.
 
 ## Paper library
 

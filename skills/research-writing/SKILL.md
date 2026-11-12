@@ -55,7 +55,7 @@ Illustrate key results with figures where useful. Scripts go in the notes direct
 
 - The notes contain only the **current state of the argument**, not a revision history.
 - If you find an error, **correct it in place** and mention the correction **in the chat response only.**
-- Do not accumulate notes on things found wrong. You may keep a wrong argument only if it is a useful tool for future work, detached from its original context as a standalone idea or calculation.
+- Do not accumulate notes on things found wrong. You may keep a wrong argument only if it is a useful tool for future work, detached from its original context as a standalone idea or calculation. An approach that was worked out or tested and fails goes to the project's museum of dead ends (skill `project-layout`, "Museum of dead ends"), as a standalone analysis of why it fails.
 - The **exact wording** of the user's requests does not matter. Collect and present the requested results concisely and cleanly. Do not add sections just to answer a question in the wording you got it.
 - If you receive instructions in Markdown, JSON, etc. files, **do not refer back to them** and do not assume they remain.
 - Once an open problem is answered, **remove it.** Likewise delete pointers to superseded ideas, and any phrasing that frames a section as answering a question, correcting a past pass, or retracting a claim ("Resolved", "Answered", "Retracted", `~~struck-through~~` text, "the Nth pass"). State the current argument directly.

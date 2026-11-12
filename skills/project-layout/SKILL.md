@@ -1,6 +1,6 @@
 ---
 name: project-layout
-description: Directory management for research projects with Markdown notes and code — the project root, numbered notes files, nested notes directories, README.md files for notes and code, cross-reference format, when to split or merge files and directories, renumbering hygiene. Use whenever creating, renaming, splitting or reorganising notes files or directories, writing a README, or citing another notes file.
+description: Directory management for research projects with Markdown notes and code — the project root, numbered notes files, nested notes directories, README.md files for notes and code, cross-reference format, when to split or merge files and directories, renumbering hygiene, the museum of dead ends. Use whenever creating, renaming, splitting or reorganising notes files or directories, writing a README, or citing another notes file.
 ---
 
 # Project layout
@@ -31,7 +31,7 @@ A cross-reference is the **relative path from the citing file's directory to the
 - further away: "File `../../foo/bar/01`";
 - from `code/` (docstrings, code README) to the notes beside it: "File `../07`, §2.2".
 
-Several files may be cited together as "Files `03`–`05`" or "Files `03` and `07`". Cross-references never go above the root. They are mechanically checkable: the path plus the number must match exactly one `NN-*.md` file.
+Several files may be cited together as "Files `03`–`05`" or "Files `03` and `07`"; in another directory every end of a range carries the full path, "Files `../bar/01`–`../bar/03`". Cross-references never go above the root. They are mechanically checkable: the path plus the number must match exactly one `NN-*.md` file (`xref_check.py` of skill `notes-refactor` checks them, with the cited §, Table and Fig.).
 
 ## README.md of a notes directory
 
@@ -61,10 +61,22 @@ Several files may be cited together as "Files `03`–`05`" or "Files `03` and `0
 **Each distinct topic gets its own numbered `.md` file**, containing that topic worked out in detail.
 
 - **Each file has one clear focus.** If a file covers several things that do not work towards the same goal, split it. If one file becomes a small subsidiary of another, merge it in.
-- **Weight shifts:** you may start new files or rearrange sections only after checking the change with the user.
+- **Weight shifts:** you may start new files or rearrange sections only after checking the change with the user. A refactor planned in plan mode with skill `notes-refactor` counts as checked once the plan is approved.
 - A file that outgrows its word budget (skill `research-writing`) is a candidate for splitting; propose the split to the user.
 - **Directories.** When a notes directory accumulates several groups of files that each work towards a separate goal, propose to the user moving a group into a nested notes directory (within the allowed depth). Ask before creating a new directory when its topic overlaps strongly with an existing one; recommend adding to the existing one.
-- **Renumbering and moving.** When you rearrange, renumber or move files, update every citation (grep the root for the old label and for relative paths that resolved to it) and **do not leave pointers behind** to the old location.
+- **Renumbering and moving.** When you rearrange, renumber or move files, update every citation (grep the root for the old label and for relative paths that resolved to it) and **do not leave pointers behind** to the old location. Pointers to the museum (below) are not such leftovers: they warn against a dead end, they do not redirect to moved content.
+- **Large reorganisations** (several files, new directories, separating general methods from model-specific work, first port of legacy notes): follow skill `notes-refactor`.
+
+## Museum of dead ends
+
+Approaches that were worked out or tested and fail, or were abandoned for a reason worth remembering, go to a notes directory `museum/` instead of being deleted or left in the main line. It is a warning collection: consult it before reviving an idea.
+
+- **What qualifies.** A method, observable, estimator, ansatz or derivation route with evidence that it fails or is not worth pursuing here: a test, a counterexample, a cost estimate, an exact result showing it cannot work. Plain mistakes do not qualify; they are corrected in place (skill `research-writing`, "State, not history"). A museum file is a standalone analysis of why the approach fails, not a record of how the notes developed.
+- **Place.** `museum/` is an ordinary notes directory (numbered files, README), a sibling of the topic directories, normally directly under the top notes directory; it counts toward the nesting depth. One museum per project unless `CLAUDE.md` says otherwise. Source material behind an entry (a chat transcript, a scratch derivation) may sit beside it as an unnumbered file cited from the entry.
+- **Each file** opens its Scope with a paragraph **"Why this is in the museum"**: what was hoped, why it fails, what replaces it and where. The rest keeps the usual structure; Problems lists only what would be needed if the approach were revived.
+- **README.** After the overview, a **Warnings** table with one row per dead end: dead end | why it fails | replaced by | where. It also lists short warnings that live inside main-line files (a paragraph showing that an observable fails, say), pointing to them, so the table is the complete list. Then the usual H2 per file.
+- **Pointers from the main line.** Wherever a main-line file would otherwise tempt a reader into a dead end, it carries one sentence and a cross-reference to the museum entry ("single-temperature ladders fail at low $T$; File `../museum/03`, §3").
+- **Discoverability.** The project's `CLAUDE.md` has one line naming `museum/` and asking to read its warnings table before proposing a method, observable or estimator. New dead ends are added (file or table row), not deleted.
 
 ## README.md of a code directory
 
