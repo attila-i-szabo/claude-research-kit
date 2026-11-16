@@ -40,6 +40,8 @@ Copy `templates/CLAUDE.md` into the project root and edit it. The essential line
 
 A directory with its own `CLAUDE.md` is a project root (skill `project-layout`): Claude may work anywhere below it, never above.
 
+Make the root a working directory of every session, so that a session started in a subdirectory can read and list the whole project without permission prompts while everything above still prompts. Add the root's absolute path to `permissions.additionalDirectories` in `ROOT/.claude/settings.local.json` (personal, since the path is machine-specific), e.g. `{"permissions": {"additionalDirectories": ["/home/attila/Science/my-project"]}}`.
+
 ## Porting an existing project
 
 For a project that predates the kit (for the notes themselves, follow skill `notes-refactor` with its `first-port.md`, which plans these steps together):

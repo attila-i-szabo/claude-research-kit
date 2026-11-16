@@ -10,7 +10,7 @@ The project's `CLAUDE.md` says where notes, code and figures go, and how deeply 
 ## Root
 
 - The **root** of a project is the nearest ancestor directory (of the working directory, or of the file being edited) that contains a `CLAUDE.md`. A directory with its own `CLAUDE.md` is a root even if an ancestor also has one.
-- You may walk up to the root to resolve cross-references, and you may read and edit anything below the root, even when the session was started in a subdirectory. **Never go above the root.** If the session's permissions block an edit below the root, ask the user to run `/add-dir ROOT`.
+- You may walk up to the root to resolve cross-references, and you may read and edit anything below the root, even when the session was started in a subdirectory. **Never go above the root.** If the session's permissions block an edit below the root, ask the user to run `/add-dir ROOT` for this session, or to add ROOT to `permissions.additionalDirectories` in `ROOT/.claude/settings.local.json` for good.
 - The shared paper library (skill `research-writing`) is outside every root and is the one exception.
 
 ## Notes directories
